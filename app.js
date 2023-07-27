@@ -1,4 +1,5 @@
 const express = require("express");
+const booksRoutes = require("./routes/books");
 
 const app = express();
 
@@ -14,5 +15,7 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+app.use("/api/books", booksRoutes);
 
 module.exports = app;
