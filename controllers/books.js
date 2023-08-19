@@ -9,7 +9,6 @@ exports.allInfoBook = (req, res, next) => {
 };
 
 exports.threeBest = (req, res, next) => {
-  console.log("test");
   Book.find()
     .sort("-averageRating")
     .limit(3)
@@ -33,12 +32,13 @@ exports.addBook = (req, res, next) => {
   const object = JSON.parse(req.body.book);
   delete object._id;
   delete object._userId;
+  const imageUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/images/${req.file.filename.replace(/\.(jpg|jpeg|png)$/i, "_resized.$1")}`;
   const book = new Book({
     ...object,
     _userId: req.auth.userId,
-    imageUrl: `${req.protocol}://${req.get("host")}/images/${
-      req.file.filename
-    }`,
+    imageUrl: imageUrl,
   });
   book
     .save()
@@ -50,9 +50,12 @@ exports.modifyBook = (req, res, next) => {
   const object = req.file
     ? {
         ...JSON.parse(req.body.book),
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
+        imageUrl: `${req.protocol}://${req.get(
+          "host"
+        )}/images/${req.file.filename.replace(
+          /\.(jpg|jpeg|png)$/i,
+          "_resized.$1"
+        )}`,
       }
     : { ...req.body };
   delete object._userId;
