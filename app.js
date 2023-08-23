@@ -1,21 +1,23 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const helmet = require("helmet");
 const booksRoutes = require("./routes/books");
 const userRoutes = require("./routes/user");
 const path = require("path");
+require("dotenv").config();
+console.log(process.env); // remove this after you've confirmed it is working
 
 mongoose
-  .connect(
-    "mongodb+srv://ex_admin:test@cluster0.hwyygrk.mongodb.net/test?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(process.env.CLUSTER_CONNECTION, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
 const app = express();
+
+app.use(helmet({ crossOriginResourcePolicy: false }));
 
 app.use(express.json());
 
